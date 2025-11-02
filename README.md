@@ -6,6 +6,9 @@
 <img width="890" height="689" alt="image" src="https://github.com/user-attachments/assets/d1ac0ea9-6803-4ebf-a940-1c54d04f8f7e" /></p>
 + 3. Sử dụng 1 file docker-compose.yml để cài đặt các docker container</p>
 <img width="1136" height="633" alt="image" src="https://github.com/user-attachments/assets/78d22b80-9d60-4f16-9e1d-55233c4e3be9" /> </p>
-
++ Cài đặt các container </p>
+<img width="1164" height="360" alt="image" src="https://github.com/user-attachments/assets/fe49b918-9ab4-469b-a112-4045f5977836" />
+<img width="1196" height="569" alt="image" src="https://github.com/user-attachments/assets/c3b005ad-a510-4c50-acdb-05a28ccd2142" />
++ 4. 
 
 
