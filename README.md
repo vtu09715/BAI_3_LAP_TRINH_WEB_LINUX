@@ -9,6 +9,11 @@
 + Cài đặt các container </p>
 <img width="1164" height="360" alt="image" src="https://github.com/user-attachments/assets/fe49b918-9ab4-469b-a112-4045f5977836" />
 <img width="1196" height="569" alt="image" src="https://github.com/user-attachments/assets/c3b005ad-a510-4c50-acdb-05a28ccd2142" />
-+ 4. Lập trình web frontend+backend
-
++ 4. Lập trình web frontend+backend ( Web IOT: Giám sát dữ liệu IOT.)
++ Tạo bảng database
+<img width="1008" height="698" alt="image" src="https://github.com/user-attachments/assets/79be3c82-4a45-4634-ba06-7e73eff71fcf" />
++ khởi động nodered và cài packages Tạo settings.js để expose libs cho function nodes
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/b2568dc9-f882-40cb-b6fe-9b348f333346" />
++ tạo liên kết nodered 
+<img width="1920" height="1020" alt="image" src="https://github.com/user-attachments/assets/b3bd0572-296b-4bd3-9d63-c37965bf4997" />
 
