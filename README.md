@@ -37,5 +37,7 @@
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/cb37e387-37dd-48d0-9b2f-5309ab10282a" />
 # + Kết quả hiển thị biểu đồ đo nhiệt độ </p>
 <img width="1600" height="768" alt="image" src="https://github.com/user-attachments/assets/37761c09-6174-48ad-a110-a7dca88a7337" />
+# + Đổi tên miền vuductu
+<img width="1458" height="786" alt="image" src="https://github.com/user-attachments/assets/1e035253-704f-4ae3-96c6-811d97f864d0" />
 
 
