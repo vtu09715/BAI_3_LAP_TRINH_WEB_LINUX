@@ -34,7 +34,7 @@
 # + đăng nhập và cấu hình các liên kết </p>
 <img width="1564" height="332" alt="image" src="https://github.com/user-attachments/assets/95d9b594-3b6c-4bc5-936a-6815439ef592" />
 <img width="1884" height="895" alt="image" src="https://github.com/user-attachments/assets/fc382f0a-96c1-42f0-a1e8-4a2b9a267da3" />
-<img width="1698" height="816" alt="image" src="https://github.com/user-attachments/assets/ca09b9b5-225a-4cd1-9bad-a9741a3f8877" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/cb37e387-37dd-48d0-9b2f-5309ab10282a" />
 # + Kết quả hiển thị biểu đồ đo nhiệt độ </p>
 <img width="1600" height="768" alt="image" src="https://github.com/user-attachments/assets/37761c09-6174-48ad-a110-a7dca88a7337" />
 
