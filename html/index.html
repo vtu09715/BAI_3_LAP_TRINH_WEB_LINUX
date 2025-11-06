@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Giám Sát IoT</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
+    <style>
+        body {
+            background: #f0f3f8;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+        }
+        header {
+            background: #004aad;
+            color: white;
+            text-align: center;
+            padding: 15px;
+        }
+        .login-container {
+            width: 350px;
+            margin: 100px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        .chart-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        #dashboard-view {
+            display: none;
+            padding: 20px;
+        }
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="login-view">
+        <div class="login-container">
+            <h3 class="text-center mb-4">Đăng nhập hệ thống IoT</h3>
+            <form id="loginForm">
+                <div class="mb-3">
+                    <label class="form-label">Tên đăng nhập</label>
+                    <input type="text" id="username" class="form-control" placeholder="admin" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Mật khẩu</label>
+                    <input type="password" id="password" class="form-control" placeholder="123456" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Đăng nhập</button>
+                <div id="loginMessage" class="text-center mt-3 text-danger"></div>
+            </form>
+        </div>
+    </div>
+
+    <div id="dashboard-view">
+        <header class="d-flex justify-content-between align-items-center px-4">
+            <h2>Dashboard Giám Sát IoT</h2>
+            <button class="btn btn-danger" id="logoutButton">Đăng Xuất</button>
+        </header>
+
+        <div class="container mt-4">
+            <h4 class="text-center">Dữ liệu nhiệt độ và độ ẩm (từ Node-RED/MariaDB)</h4>
+            
+            <div class="d-flex justify-content-around mt-4">
+                <div>
+                    <h5 class="text-center">Nhiệt độ (°C)</h5>
+                    <canvas id="tempGauge" width="200" height="200"></canvas>
+                </div>
+                <div>
+                    <h5 class="text-center">Độ ẩm (%)</h5>
+                    <canvas id="humGauge" width="200" height="200"></canvas>
+                </div>
+            </div>
+
+            <div style="width: 100%; max-width: 900px; margin: 40px auto;">
+                <canvas id="lineChart"></canvas>
+            </div>
+        </div>
+
+        <footer>
+            <p>© 2025 - Hệ thống Giám sát IoT - Node-RED • MariaDB • Grafana • InfluxDB</p>
+        </footer>
+    </div>
+
+    <script>
+        const loginView = document.getElementById('login-view');
+        const dashboardView = document.getElementById('dashboard-view');
+        const loginForm = document.getElementById('loginForm');
+        const loginMsg = document.getElementById('loginMessage');
+        const logoutButton = document.getElementById('logoutButton');
+
+        let tempGauge, humGauge, lineChart;
+        let updateInterval; // Dùng để lưu trữ ID của setInterval
+        const MAX_HISTORY_POINTS = 60; // Số lượng điểm lịch sử tối đa hiển thị
+
+        // === 1. XỬ LÝ LOGIN (Gọi Node-RED API) ===
+        loginForm.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            loginMsg.textContent = 'Đang kiểm tra thông tin...';
+            loginMsg.classList.remove('text-danger');
+            loginMsg.style.color = '#004aad';
+
+            try {
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                if (response.ok && response.status === 200) {
+                    loginMsg.textContent = 'Đăng nhập thành công!';
+                    loginMsg.style.color = '#198754';
+                    
+                    setTimeout(() => {
+                        loginView.style.display = 'none';
+                        dashboardView.style.display = 'block';
+                        startDashboard();
+                        loginMsg.textContent = '';
+                    }, 500);
+
+                } else {
+                    loginMsg.textContent = 'Sai tên đăng nhập hoặc mật khẩu!';
+                    loginMsg.style.color = '#dc3545';
+                }
+            } catch (error) {
+                console.error("❌ Lỗi kết nối API Login:", error);
+                loginMsg.textContent = 'Lỗi kết nối hệ thống. Vui lòng kiểm tra Node-RED/NGINX.';
+                loginMsg.style.color = '#dc3545';
+            }
+        });
+
+        // === 2. XỬ LÝ LOGOUT (Bổ sung logic hủy Interval) ===
+        logoutButton.addEventListener('click', function () {
+            // Dừng cập nhật dữ liệu khi logout
+            if (updateInterval) {
+                clearInterval(updateInterval);
+                updateInterval = null;
+            }
+            // Hủy biểu đồ cũ
+            if (tempGauge) tempGauge.destroy();
+            if (humGauge) humGauge.destroy();
+            if (lineChart) lineChart.destroy();
+
+            dashboardView.style.display = 'none';
+            loginView.style.display = 'block';
+        });
+
+        // === 3. BIỂU ĐỒ GAUGE ===
+        function createGauge(ctx, value, max, label) {
+            return new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    datasets: [{
+                        data: [value, max - value],
+                        backgroundColor: ['#36A2EB', '#E0E0E0'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    rotation: -90,
+                    circumference: 180,
+                    cutout: '70%',
+                    plugins: {
+                        datalabels: {
+                            display: true,
+                            formatter: (val, ctx) => ctx.dataIndex === 0 ? value + label : '',
+                            color: '#333',
+                            font: { size: 18, weight: 'bold' }
+                        },
+                        legend: { display: false }
+                    }
+                },
+                plugins: [ChartDataLabels]
+            });
+        }
+        
+        // Hàm cập nhật Gauge (Đã refactor)
+        function updateGauges(temperature, humidity) {
+            temperature = parseFloat(temperature) || 0;
+            humidity = parseFloat(humidity) || 0;
+            
+            tempGauge.data.datasets[0].data = [temperature, 100 - temperature];
+            tempGauge.options.plugins.datalabels.formatter = () => temperature + '°C'; 
+            tempGauge.update();
+            
+            humGauge.data.datasets[0].data = [humidity, 100 - humidity];
+            humGauge.options.plugins.datalabels.formatter = () => humidity + '%';
+            humGauge.update();
+        }
+
+        // === 4. KHỞI TẠO DASHBOARD (Gọi tải lịch sử) ===
+        function startDashboard() {
+            // Hủy Interval/Biểu đồ cũ
+            if (updateInterval) clearInterval(updateInterval);
+            if (tempGauge) tempGauge.destroy();
+            if (humGauge) humGauge.destroy();
+            if (lineChart) lineChart.destroy();
+            
+            const tempCtx = document.getElementById('tempGauge');
+            const humCtx = document.getElementById('humGauge');
+            const lineCtx = document.getElementById('lineChart');
+
+            tempGauge = createGauge(tempCtx, 0, 100, '°C');
+            humGauge = createGauge(humCtx, 0, 100, '%');
+
+            lineChart = new Chart(lineCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [
+                        { label: 'Nhiệt độ (°C)', data: [], borderColor: 'red', fill: false, tension: 0.1 },
+                        { label: 'Độ ẩm (%)', data: [], borderColor: 'blue', fill: false, tension: 0.1 }
+                    ]
+                },
+                options: {
+                    scales: {
+                        x: { title: { display: true, text: 'Thời gian' } },
+                        y: { beginAtZero: true, max: 100 }
+                    },
+                     animation: false 
+                }
+            });
+
+            // Bắt đầu tải lịch sử và dữ liệu mới nhất
+            fetchHistory(); 
+            updateInterval = setInterval(fetchData, 5000); 
+        }
+
+        // === 5. GỌI API NODE-RED LẤY DỮ LIỆU LỊCH SỬ (MỚI) ===
+        async function fetchHistory() {
+            try {
+                // Yêu cầu Node-RED API lấy 60 bản ghi mới nhất (theo MAX_HISTORY_POINTS)
+                const res = await fetch(`/api/historydata?limit=${MAX_HISTORY_POINTS}`); 
+                
+                if (!res.ok) throw new Error("Không nhận được dữ liệu lịch sử từ Node-RED");
+
+                const historyData = await res.json();
+                
+                const labels = [];
+                const tempDataSet = [];
+                const humDataSet = [];
+
+                // Lưu ý: Node-RED Flow /api/historydata cần sắp xếp dữ liệu Lịch sử theo Thời gian Tăng dần
+                historyData.forEach(item => {
+                    // Cần kiểm tra item.timestamp có tồn tại không. Giả định nó là ISO string từ MariaDB.
+                    let timeLabel;
+                    try {
+                        timeLabel = new Date(item.timestamp).toLocaleTimeString(); 
+                    } catch (e) {
+                         timeLabel = 'N/A';
+                    }
+                    
+                    labels.push(timeLabel);
+                    tempDataSet.push(parseFloat(item.temperature));
+                    humDataSet.push(parseFloat(item.humidity));
+                });
+                
+                // Cập nhật biểu đồ đường với dữ liệu lịch sử
+                lineChart.data.labels = labels;
+                lineChart.data.datasets[0].data = tempDataSet;
+                lineChart.data.datasets[1].data = humDataSet;
+                
+                // Cập nhật các Gauge với giá trị MỚI NHẤT (bản ghi cuối cùng trong mảng)
+                if (historyData.length > 0) {
+                    const latest = historyData[historyData.length - 1];
+                    updateGauges(latest.temperature, latest.humidity);
+                }
+
+                lineChart.update();
+
+            } catch (err) {
+                console.error("❌ Lỗi khi gọi API lịch sử:", err);
+            }
+        }
+        
+        // === 6. GỌI API NODE-RED LẤY DỮ LIỆU MỚI NHẤT (Cập nhật real-time) ===
+        async function fetchData() {
+            try {
+                // 🔗 GỌI API Node-RED LẤY BẢN GHI MỚI NHẤT
+                const res = await fetch("/api/maindata");
+                
+                if (!res.ok) {
+                    console.error("❌ Lỗi: Không nhận được dữ liệu (Status: " + res.status + ")");
+                    return; 
+                }
+
+                const data = await res.json();
+
+                const temperature = data.temperature;
+                const humidity = data.humidity;
+                const now = new Date().toLocaleTimeString();
+
+                // Cập nhật Gauge
+                updateGauges(temperature, humidity);
+
+                // Cập nhật biểu đồ đường (Add and Shift)
+                lineChart.data.labels.push(now);
+                lineChart.data.datasets[0].data.push(parseFloat(temperature));
+                lineChart.data.datasets[1].data.push(parseFloat(humidity));
+                
+                // Giới hạn số lượng điểm hiển thị
+                if (lineChart.data.labels.length > MAX_HISTORY_POINTS) {
+                    lineChart.data.labels.shift();
+                    lineChart.data.datasets[0].data.shift();
+                    lineChart.data.datasets[1].data.shift();
+                }
+                
+                lineChart.update();
+
+            } catch (err) {
+                console.error("❌ Lỗi khi gọi Node-RED API:", err);
+            }
+        }
+    </script>
+</body>
+</html>
