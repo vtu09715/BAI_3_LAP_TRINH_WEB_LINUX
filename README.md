@@ -51,6 +51,7 @@
 <img width="1458" height="786" alt="image" src="https://github.com/user-attachments/assets/1e035253-704f-4ae3-96c6-811d97f864d0" />
 <img width="1898" height="995" alt="image" src="https://github.com/user-attachments/assets/210bf159-7b67-4ca2-8733-bd580b1c1f52" />
 
-# Kết Luận: qua quá trình làm bài em còn nhiều sai sót. nhưng đã hiểu thêm được phần cấu trúc quản lý của website mới thông qua nodered,... EM CẢM ƠN THẦY ĐÃ XEM BÀI CỦA EM 
+# Kết Luận: qua quá trình làm bài em còn nhiều sai sót. nhưng đã hiểu thêm được phần cấu trúc quản lý của website mới thông qua nodered,... </P>
+# EM CẢM ƠN THẦY ĐÃ XEM BÀI CỦA EM 
 
 
