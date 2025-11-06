@@ -52,6 +52,8 @@ Yêu cầu     : LẬP TRÌNH ỨNG DỤNG WEB trên nền linux
 
 # + 4. Lập trình web frontend+backend ( Web IOT: Giám sát dữ liệu IOT.)</p>
 # + Tạo bảng database</p>
+<img width="1516" height="847" alt="image" src="https://github.com/user-attachments/assets/01c03fe6-9501-493c-b62f-cece298ffead" />
+
 # + Bảng lưu tài khoản đăng nhập </p>
 <img width="1065" height="295" alt="image" src="https://github.com/user-attachments/assets/55383376-f85c-4e01-835d-364fa5d1ddcf" /></p>
 
