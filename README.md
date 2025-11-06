@@ -62,7 +62,7 @@ Yêu cầu     : LẬP TRÌNH ỨNG DỤNG WEB trên nền linux
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/b2568dc9-f882-40cb-b6fe-9b348f333346" /> </p>
 
 # + tạo liên kết nodered </p>
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/405523cb-06ce-414e-b848-af33a912f50e" />
+<img width="1424" height="658" alt="image" src="https://github.com/user-attachments/assets/46d6a33b-8b84-436e-b7f0-b6c8b2609a49" />
 
 # + Cấu hình các node để trỏ api </p>
 # + SQL </p>
