@@ -50,6 +50,8 @@ Yêu cầu     : LẬP TRÌNH ỨNG DỤNG WEB trên nền linux
  # + Cài đặt các container </p>
 <img width="1616" height="482" alt="image" src="https://github.com/user-attachments/assets/da7260ba-804b-4633-877e-4769f2e09ec9" />
 
+<img width="614" height="239" alt="image" src="https://github.com/user-attachments/assets/9ef3eed3-8f6d-4ca4-a0d8-ebcd0b9b8d83" />
+
 # + 4. Lập trình web frontend+backend ( Web IOT: Giám sát dữ liệu IOT.)</p>
 # + Tạo công cụ quản trị dữ liệu trong mariadb/p>
 <img width="1516" height="847" alt="image" src="https://github.com/user-attachments/assets/01c03fe6-9501-493c-b62f-cece298ffead" />
