@@ -89,7 +89,7 @@ Yêu cầu     : LẬP TRÌNH ỨNG DỤNG WEB trên nền linux
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/cb37e387-37dd-48d0-9b2f-5309ab10282a" />
 
 # + Kết quả hiển thị biểu đồ đo nhiệt độ </p>
-<img width="547" height="162" alt="image" src="https://github.com/user-attachments/assets/68561c16-cc80-41e5-a7a8-07f2bd28cfdb" />
+<img width="1366" height="553" alt="image" src="https://github.com/user-attachments/assets/bc3a8266-3ffa-422e-9caa-e65472754a14" />
 
 # + Đổi tên miền vuductu </p>
 <img width="1458" height="786" alt="image" src="https://github.com/user-attachments/assets/1e035253-704f-4ae3-96c6-811d97f864d0" />
